@@ -1,16 +1,14 @@
-using Microsoft.AspNetCore.Mvc;
-using API.Entities;
 using API.Data;
-using Microsoft.AspNetCore.Http.HttpResults;
+using API.Entities;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
-
-public class UsersController
+[Route("api/v1/[controller]")]
+public class UsersController : ControllerBase
 {
-
     private readonly DataContext _context;
 
     public UsersController(DataContext context)
@@ -18,26 +16,27 @@ public class UsersController
         _context = context;
     }
 
-
     [HttpGet]
-
-    public ActionResult<IEnumerable<AppUser>> GetUsers()
+    public async Task<ActionResult<IEnumerable<AppUser>>> GetUsersAsync()
     {
-        var users = _context.Users.ToList();
+        var users = await _context.Users.ToListAsync();
 
         return users;
     }
 
-    [HttpGet("{id}")]
-
-    public ActionResult<IEnumerable<AppUser>> GetUsersById(int id)
+    [HttpGet("{id:int}")] // api/v1/users/2
+    public async Task<ActionResult<AppUser>> GetUsersByIdAsync(int id)
     {
-        var user = _context.Users.Find(id);
+        var user = await _context.Users.FindAsync(id);
 
         if (user == null) return NotFound();
 
         return user;
     }
-
-
+    
+    [HttpGet("{name}")] // api/v1/users/Calamardo
+    public ActionResult<string> Ready(string name)
+    {
+        return $"Hi {name}";
+    }
 }
