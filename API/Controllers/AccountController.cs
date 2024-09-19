@@ -48,7 +48,7 @@ public class AccountController(DataContext context) : BaseApiController
         return Unauthorized("invalid username or password");
     }
 
-    using var hmac = new HMACSHA512(user.PassWordHash);
+    using var hmac = new HMACSHA512(user.PassWordSalt);
     var computeHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(request.Password));
 
     for (int i=0;i<computeHash.Length;i++)
