@@ -4,15 +4,20 @@ using API.Data;
 using API.DTOs;
 using API.Entities;
 using API.interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers;
 
+
+[Authorize]
+
 public class AccountController(
     DataContext context,
     ITokenService tokenService) : BaseApiController
 {
+    
     [HttpPost("register")]
 
     public async Task<ActionResult<UserResponse>> RegisterAsync (RegisterRequest request)
