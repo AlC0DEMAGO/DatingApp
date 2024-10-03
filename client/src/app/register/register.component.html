@@ -8,16 +8,15 @@
     </div>
 
     <div class="mb-3">
-        <label>Who is yout favorite user?</label>
+        <label>Who is your favorite user?</label>
         <select class="form-select">
             @for (user of usersFromHomeComponent(); track $index) {
                 <option [value]="user.userName">
-                    {{user.username}}
+                    {{user.userName}}
                 </option>
             }
         </select>
     </div>
-
 
     <div class="mb-3 form-floating">
         <input type="password" class="form-control" name="password"
