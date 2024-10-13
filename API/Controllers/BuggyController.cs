@@ -21,7 +21,7 @@ public class BuggyController(DataContext context) : BaseApiController
         {
             var result = context.Users.Find(-1) ?? 
                 throw new ArgumentException("Server error ocurred!");
-            return "random text";
+            return "random text"; 
         }
 
         [HttpGet("bad-request")]
