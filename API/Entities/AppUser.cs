@@ -6,9 +6,9 @@ public class AppUser
     public int id {get;set;}
 
     public required string UserName {get;set;}
-    public required byte[] PassWordHash {get;set;} = [];
+    public byte[] PasswordHash {get;set;} = [];
 
-    public required byte[] PassWordSalt {get;set;} = [];
+    public byte[] PasswordSalt {get;set;} = [];
 
     public DateOnly BirthDay {get;set;}
     public required string KnownAs {get;set;}

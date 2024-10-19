@@ -60,12 +60,12 @@ public class AccountController(
         return Unauthorized("invalid username or password");
     }
 
-    using var hmac = new HMACSHA512(user.PassWordSalt);
+    using var hmac = new HMACSHA512(user.PasswordSalt);
     var computeHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(request.Password));
 
     for (int i=0;i<computeHash.Length;i++)
     {
-        if (computeHash[i] != user.PassWordHash[i]){
+        if (computeHash[i] != user.PasswordHash[i]){
             return Unauthorized("invalid username or password");
         }
     }
