@@ -1,5 +1,6 @@
 using API.Data;
 using API.DataEntities;
+using API.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -28,7 +29,7 @@ public class UsersController : BaseApiController
     }
 
     [HttpGet("{id:int}")] // api/v1/users/2
-    public async Task<ActionResult<AppUser>> GetByIdAsync(int id)
+    public async Task<ActionResult<MemberResponse>> GetByIdAsync(int id)
     {
         var user = await _repository.GetByIdAsync(id);
 
