@@ -1,15 +1,14 @@
-using System.Runtime.InteropServices;
+namespace API.Helpers;
+
 using API.DataEntities;
 using API.DTOs;
-using API.Entities;
 using AutoMapper;
 
-namespace API.Helpers;
 public class AutoMapperProfiles : Profile
 {
     public AutoMapperProfiles()
     {
-        CreateMap<AppUser,MemberResponse>();
-        CreateMap<Photo,PhotoResponse>();
+        CreateMap<AppUser, MemberResponse>();
+        CreateMap<Photo, PhotoResponse>();
     }
 }

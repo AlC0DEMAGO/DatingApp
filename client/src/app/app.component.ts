@@ -11,22 +11,18 @@ import { HomeComponent } from "./home/home.component";
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
-export class AppComponent implements OnInit{
-  
-  title = 'Date me';
+export class AppComponent implements OnInit {
   private accountService = inject(AccountService);
-  
+  title = 'Date me';
 
   ngOnInit(): void {
     this.setCurrentUser();
   }
 
-  setCurrentUser(): void{
+  setCurrentUser(): void {
     const userString = localStorage.getItem("user");
-    if(!userString) return;
+    if (!userString) return;
     const user = JSON.parse(userString);
     this.accountService.currentUser.set(user);
   }
-
-  
 }
