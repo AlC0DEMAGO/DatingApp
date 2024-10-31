@@ -42,8 +42,13 @@
                     <h4>Interests</h4>
                     <p>{{member.interests}}</p>
                 </tab>
-                <tab heading="Photos">
-                    <p>the photos it's going to be here</p>
+                <tab heading="Photos" #photoTab="tab">
+                    @if(photoTab.active){
+                        <gallery>
+                            [items]="images"
+                            class="gallery"
+                        </gallery>
+                    }
                 </tab>
                 <tab heading="Mensajes">
                     <p>the messages it's going to be here</p>
