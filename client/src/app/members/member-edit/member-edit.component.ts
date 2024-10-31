@@ -3,11 +3,13 @@ import { AccountService } from '../../_services/account.service';
 import { MembersService } from '../../_services/members.service';
 import { Member } from '../../_models/member';
 import { RouterLink } from '@angular/router';
+import { TabsModule } from 'ngx-bootstrap/tabs';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-member-edit',
   standalone: true,
-  imports: [],
+  imports: [TabsModule,FormsModule],
   templateUrl: './member-edit.component.html',
   styleUrl: './member-edit.component.css'
 })
