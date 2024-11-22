@@ -31,7 +31,7 @@ public class APIWebApplicationFactory<IStartup> : WebApplicationFactory<Startup>
             })
             .ConfigureServices(services =>
             {
-                // Remove the app's ApplicationDbContext registration.
+                
                 var descriptor = services.SingleOrDefault(
                     d => d.ServiceType == typeof(DbContextOptions<DataContext>));
 
@@ -40,18 +40,15 @@ public class APIWebApplicationFactory<IStartup> : WebApplicationFactory<Startup>
                     services.Remove(descriptor);
                 }
 
-                // Add a database context using an in-memory database for testing.
+                
                 services.AddDbContext<DataContext>(options =>
                 {
                     options.UseSqlite(Configuration.GetConnectionString("DefaultConnection"));
                     options.EnableSensitiveDataLogging();
                 });
             })
-            // ConfigureTestServices will be fired after actual Startup's ConfigureServices are called
-            // Hence anything written in this will override that setting (except EF Sql DBContext)
             .ConfigureTestServices(async services =>
             {
-                // Build the service provider.
                 var sp = services.BuildServiceProvider();
 
                 using (var scope = sp.CreateScope())
@@ -60,13 +57,18 @@ public class APIWebApplicationFactory<IStartup> : WebApplicationFactory<Startup>
 
                     try
                     {
-                        await context.Database.MigrateAsync();
+                        await context.Database.EnsureCreatedAsync();
+                        // Limpia los usuarios existentes
+                        var allUsers = await context.Users.ToListAsync();
+                        context.Users.RemoveRange(allUsers);
+                        await context.SaveChangesAsync();
+                        // Seed desde JSON
                         await Seed.SeedUsersAsync(context);
                     }
                     catch (Exception ex)
                     {
                         var logger = sp.GetRequiredService<ILogger<Program>>();
-                        logger.LogError(ex, "An error has occurred during migration/seeding.");
+                        logger.LogError(ex, "Error al realizar la migración o el seed.");
                     }
                 }
             });

@@ -8,7 +8,10 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
+using System.Diagnostics.CodeAnalysis;
 
+
+[ExcludeFromCodeCoverage]
 public class Program
 {
     public static async Task Main(string[] args)
