@@ -4,6 +4,7 @@ using System.Text;
 using System.Text.Json;
 using API.DataEntities;
 using Microsoft.EntityFrameworkCore;
+
 public class Seed
 {
     public static async Task SeedUsersAsync(DataContext context)

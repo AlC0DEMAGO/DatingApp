@@ -3,6 +3,7 @@ using API.DTOs;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace API.Data;
 public class UserRepository(DataContext context,IMapper mapper) : IUserRepository
@@ -33,6 +34,9 @@ public class UserRepository(DataContext context,IMapper mapper) : IUserRepositor
         => await context.Users
             .ProjectTo<MemberResponse>(mapper.ConfigurationProvider)
             .ToListAsync();
+        
+        
+    public async Task<object?> GetUserByIdAsync(int v) => throw new NotImplementedException();
 
     public async Task<bool> SaveAllAsync() => await context.SaveChangesAsync()>0;
 
