@@ -7,9 +7,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Threading.Tasks;
 using System.Diagnostics.CodeAnalysis;
-
+using System.Threading.Tasks;
 
 [ExcludeFromCodeCoverage]
 public class Program

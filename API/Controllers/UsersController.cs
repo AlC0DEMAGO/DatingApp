@@ -1,9 +1,10 @@
 namespace API.Controllers;
 
-using System.Security.Claims;
 using API.Data;
 using API.DataEntities;
 using API.DTOs;
+using API.Extensions;
+using API.Services;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -12,12 +13,13 @@ using Microsoft.AspNetCore.Mvc;
 public class UsersController : BaseApiController
 {
     private readonly IUserRepository _repository;
+    private readonly IPhotoService _photoService;
     private readonly IMapper _mapper;
-    
 
-    public UsersController(IUserRepository repository,IMapper mapper)
+    public UsersController(IUserRepository repository, IPhotoService photoService, IMapper mapper)
     {
         _repository = repository;
+        _photoService = photoService;
         _mapper = mapper;
     }
 
@@ -25,12 +27,10 @@ public class UsersController : BaseApiController
     public async Task<ActionResult<IEnumerable<MemberResponse>>> GetAllAsync()
     {
         var members = await _repository.GetMembersAsync();
-
         return Ok(members);
     }
 
-
-    [HttpGet("{username}")] // api/users/Calamardo
+    [HttpGet("{username}", Name = "GetByUsername")] // api/users/Calamardo
     public async Task<ActionResult<MemberResponse>> GetByUsernameAsync(string username)
     {
         var member = await _repository.GetMemberAsync(username);
@@ -44,25 +44,79 @@ public class UsersController : BaseApiController
     }
 
     [HttpPut]
-    public async Task<ActionResult> UpdateUser(MemberUpdateRequest request){
-        var username= User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        if(username==null)
+    public async Task<ActionResult> UpdateUser(MemberUpdateRequest request)
+    {
+        var user = await _repository.GetByUsernameAsync(User.GetUserName());
+
+        if (user == null)
         {
-            return BadRequest("No username found in token");
-        }
-        var user = await _repository.GetByUsernameAsync(username);
-
-        if(user==null){
-            return BadRequest("could not find user");
+            return BadRequest("Could not find user");
         }
 
-        _mapper.Map(request,user);
-        _repository.update(user);
-        if(await _repository.SaveAllAsync())
+        _mapper.Map(request, user);
+        _repository.Update(user);
+
+        if (await _repository.SaveAllAsync())
         {
             return NoContent();
         }
-    
+
         return BadRequest("Update user failed!");
+    }
+
+    [HttpPost("photo")]
+    public async Task<ActionResult<PhotoResponse>> AddPhoto(IFormFile file)
+    {
+        var user = await _repository.GetByUsernameAsync(User.GetUserName());
+
+        if (user == null)
+        {
+            return BadRequest("Cannot update user");
+        }
+
+        var result = await _photoService.AddPhotoAsync(file);
+
+        if (result.Error != null)
+        {
+            return BadRequest(result.Error.Message);
+        }
+
+        var photo = new Photo
+        {
+            Url = result.SecureUrl.AbsoluteUri,
+            PublicId = result.PublicId
+        };
+
+        user.Photos.Add(photo);
+
+        if (await _repository.SaveAllAsync())
+        {
+            return CreatedAtAction("GetByUsername",
+                new { username = user.UserName }, _mapper.Map<PhotoResponse>(photo));
+        }
+
+        return BadRequest("Problem adding the photo");
+    }
+
+    [HttpPut("photo/{photoId:int}")]
+    public async Task<ActionResult> SetPhotoAsMain(int photoId)
+    {
+        var user = await _repository.GetByUsernameAsync(User.GetUserName());
+
+        if (user == null) return BadRequest("User not found");
+
+        var photo = user.Photos.FirstOrDefault(p => p.Id == photoId);
+
+        if (photo == null || photo.IsMain) return BadRequest("Can't set this photo as the main one!");
+
+        var currentMain = user.Photos.FirstOrDefault(p => p.IsMain);
+
+        if (currentMain != null) currentMain.IsMain = false;
+
+        photo.IsMain = true;
+
+        if (await _repository.SaveAllAsync()) return NoContent();
+
+        return BadRequest("There was a problem.");
     }
 }
