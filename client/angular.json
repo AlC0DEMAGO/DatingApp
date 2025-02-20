@@ -25,15 +25,13 @@
               "src/assets"
             ],
             "styles": [
+              "./node_modules/ngx-bootstrap/datepicker/bs-datepicker.css",
               "./node_modules/bootstrap/dist/css/bootstrap.min.css",
               "./node_modules/font-awesome/css/font-awesome.min.css",
-              "./node_modules/bootswatch/dist/vapor/bootstrap.css",
-              "./node_modules/ngx-spinner/animations/pacman.css",
+              "./node_modules/bootswatch/dist/United/bootstrap.min.css",
+              "./node_modules/ngx-spinner/animations/fire.css",
               "./node_modules/ngx-toastr/toastr.css",
-              
               "src/styles.css"
-              
-              
             ],
             "scripts": []
           },
@@ -69,7 +67,7 @@
         },
         "serve": {
           "options": {
-            "ssl":true,
+            "ssl": true,
             "sslCert": "./ssl/localhost.pem",
             "sslKey": "./ssl/localhost-key.pem"
           },
@@ -110,5 +108,8 @@
         }
       }
     }
+  },
+  "cli": {
+    "analytics": false
   }
 }
