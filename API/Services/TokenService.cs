@@ -1,26 +1,28 @@
+namespace API.Services;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using API.DataEntities;
-using API.interfaces;
 using Microsoft.IdentityModel.Tokens;
-namespace API.services;
 
-public class TokenService(IConfiguration config): ITokenService
+public class TokenService(IConfiguration config) : ITokenService
 {
-    public string CreateToken(AppUser user){
-        var tokenkey = config ["TokenKey"] ?? throw new Exception("TokenKey not found");
+    public string CreateToken(AppUser user)
+    {
+        var tokenKey = config["TokenKey"] ?? throw new ArgumentException("TokenKey not found");
+        if (tokenKey.Length < 64)
+        {
+            throw new ArgumentException("TokenKey too short");
+        }
 
-        if (tokenkey.Length<64) throw new Exception("TokenKey too short");
-
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenkey));
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenKey));
 
         var claims = new List<Claim>
         {
-            new(ClaimTypes.NameIdentifier,user.UserName)
+            new(ClaimTypes.NameIdentifier, user.UserName)
         };
 
-        var creds = new SigningCredentials(key,SecurityAlgorithms.HmacSha512Signature);
+        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 
         var tokenDescriptor = new SecurityTokenDescriptor
         {
@@ -30,10 +32,8 @@ public class TokenService(IConfiguration config): ITokenService
         };
 
         var tokenHandler = new JwtSecurityTokenHandler();
-
         var token = tokenHandler.CreateToken(tokenDescriptor);
 
         return tokenHandler.WriteToken(token);
-
     }
 }
