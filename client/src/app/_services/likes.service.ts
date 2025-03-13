@@ -16,7 +16,7 @@ toogleLike(targetId: number) {
 }
 
 getLikes(predicate: string) {
-    return this.http.get(`${this.baseUrl}likes?predicate=${predicate}`);
+    return this.http.get<Member[]>(`${this.baseUrl}likes?predicate=${predicate}`);
 }
 
 getLikeIds() {
