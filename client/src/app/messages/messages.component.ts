@@ -16,7 +16,7 @@ import { PaginationModule } from 'ngx-bootstrap/pagination';
 })
 export class MessagesComponent implements OnInit {
   messagesService = inject(MessagesService);
-  container = "unread";
+  container = "Inbox"; 
   pageNumber = 1;
   pageSize = 10;
 
@@ -32,9 +32,9 @@ export class MessagesComponent implements OnInit {
   // if (this.container === "outbox") return `/members/${message.recipientUsername}`;
   // else return `/members/${message.senderUsername}`;
 
-  return this.container === "outbox"
-    ? `/members/${message.recipientUsername}`
-    : `/members/${message.senderUsername}`;
+  return this.container === "Outbox"
+      ? `/members/${message.recipientUsername}`
+      : `/members/${message.senderUsername}`;
   }
 
   pageChanged(event: any) {
