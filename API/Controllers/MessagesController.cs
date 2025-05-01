@@ -29,7 +29,7 @@ public class MessagesController
         var sender = await userRepository.GetByUsernameAsync(username);
         var recipient = await userRepository.GetByUsernameAsync(request.RecipientUsername);
 
-        if (recipient == null || sender == null)
+        if (recipient == null || sender == null || sender.UserName == null || recipient.UserName == null)
         {
             return BadRequest("The message can't be sent right now");
         }
@@ -70,7 +70,7 @@ public class MessagesController
         return Ok(await messageRepository.GetThreadAsync(currentUsername, username));
     }
 
-[HttpDelete("{id:int}")]
+    [HttpDelete("{id:int}")]
     public async Task<ActionResult> DeleteMessage(int id)
     {
         var username = User.GetUserName();
